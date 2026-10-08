@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@1,700;1,800;1,900&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  html,body{margin:0;padding:0;background:#000;color:#F2F2F2;font-family:'Golos Text',sans-serif;}
+  html{scroll-behavior:smooth;}
+  a{color:#FF4A0A;text-decoration:none;} a:hover{color:#FF7A45;}
+  ::selection{background:#FF4A0A;color:#000;}
+  @keyframes sparkfly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+  @keyframes hintpulse{0%,100%{opacity:.5}50%{opacity:1}}
+  @keyframes breathe{0%,100%{filter:brightness(1);transform:rotate(45deg) scale(1)}50%{filter:brightness(1.25);transform:rotate(45deg) scale(1.08)}}
+  @keyframes swarm{0%,55%,100%{background:#141414;box-shadow:none;transform:scale(1)}12%{background:#FF4A0A;box-shadow:0 0 16px #FF4A0A;transform:scale(1.12)}28%{background:#F2F2F2;box-shadow:none;transform:scale(1)}}
+  @keyframes beam{0%{transform:rotate(-34deg)}100%{transform:rotate(34deg)}}
+  @keyframes floodcell{0%,100%{background:#141414;box-shadow:none}20%,35%{background:#FFFFFF;box-shadow:0 0 14px rgba(255,74,10,.8)}55%{background:#141414;box-shadow:none}}
+  @keyframes blackcell{0%,8%{background:#FF4A0A;box-shadow:0 0 10px #FF4A0A}25%,88%{background:#070707;box-shadow:none}100%{background:#FF4A0A;box-shadow:0 0 10px #FF4A0A}}
+  @keyframes starburst{0%,58%{opacity:0;transform:rotate(45deg) scale(.3)}70%{opacity:1;transform:rotate(45deg) scale(1.7)}82%{opacity:1;transform:rotate(45deg) scale(1)}95%,100%{opacity:0;transform:rotate(45deg) scale(.6)}}
+</style>
+</helmet>
+
+<sc-if value="{{ gateOn }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="01 Заставка" onWheel="{{ onWheel }}" onTouchStart="{{ onTouchStart }}" onTouchMove="{{ onTouchMove }}" onPointerMove="{{ onGatePointerMove }}" style="position:fixed;inset:0;z-index:100;background:#000;opacity:{{ gateOpacity }};transition:opacity 1s ease .45s;pointer-events:{{ gatePointer }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:56px;padding:20px;touch-action:none;user-select:none;overflow:hidden;">
+    <div style="position:relative;width:min(84vw,760px);aspect-ratio:1557/243;transform:scale({{ camScale }});transform-origin:47.4% 19.3%;transition:transform 1.5s cubic-bezier(.7,0,.25,1);">
+      <div style="position:absolute;left:47.4%;top:19.3%;width:1800px;height:1800px;margin:-900px 0 0 -900px;background:repeating-conic-gradient(from 0deg,transparent 0deg 11deg,rgba(255,74,10,.55) 11deg 11.6deg);-webkit-mask:radial-gradient(circle,#000 0%,transparent 55%);mask:radial-gradient(circle,#000 0%,transparent 55%);opacity:{{ raysOpacity }};transform:scale({{ raysScale }}) rotate({{ raysRot }});transition:opacity .4s,transform 1.2s cubic-bezier(.2,1,.3,1);pointer-events:none;"></div>
+      <div style="position:absolute;left:47.4%;top:19.3%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;background:radial-gradient(circle,rgba(255,74,10,{{ preGlow }}),transparent 65%);pointer-events:none;transition:background .3s;"></div>
+      <img src="assets/logo-letters.png" alt="Illuminator" draggable="false" onPointerDown="{{ onGrab }}" style="position:absolute;inset:0;width:100%;display:block;cursor:grab;opacity:{{ lettersOpacity }};transition:opacity .2s;touch-action:none;">
+      <img src="assets/logo-diamond.png" alt="" draggable="false" style="position:absolute;inset:0;width:100%;display:block;pointer-events:none;opacity:{{ diamondOpacity }};filter:brightness({{ metal }}) drop-shadow(0 0 {{ diamondGlow }} #FF4A0A);transition:filter .12s,opacity .12s;">
+      <div style="position:absolute;z-index:3;left:47.4%;top:19.3%;pointer-events:none;">{{ sparksEl }}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;opacity:{{ uiOpacity }};transition:opacity .4s ease;">
+      <div style="font-family:'JetBrains Mono';font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#F2F2F2;animation:hintpulse 2s infinite;">Зажгите искру, чтобы войти</div>
+      <div style="font-size:13px;color:#7A7A7A;max-width:40ch;line-height:1.55;">Крутите колёсико вниз · свайп вверх · или ведите курсором по логотипу</div>
+      <div style="width:240px;height:2px;background:#1F1F1F;overflow:hidden;">
+        <div style="height:100%;width:{{ pPct }};background:#FF4A0A;box-shadow:0 0 10px #FF4A0A;transition:width .15s;"></div>
+      </div>
+      <div style="display:flex;gap:22px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+        <button onClick="{{ onAgeYes }}" style="font-family:'Exo 2';font-style:italic;font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:14px 32px;border:none;background:#FF4A0A;color:#000;cursor:pointer;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);" style-hover="background:#FFFFFF;">Мне есть 18</button>
+        <button onClick="{{ onAgeNo }}" style="font-family:'Golos Text';font-size:13px;background:none;border:none;color:#7A7A7A;cursor:pointer;text-decoration:underline;text-underline-offset:3px;">Мне нет 18</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{ deniedOn }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="01 Заглушка 18-" style="position:fixed;inset:0;z-index:110;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;text-align:center;">
+    <img src="assets/logo-letters.png" alt="" style="width:220px;opacity:.35;">
+    <div style="font-family:'Exo 2';font-style:italic;font-size:32px;font-weight:900;text-transform:uppercase;color:#FFFFFF;">Сайт доступен с 18 лет</div>
+    <div style="font-size:14px;color:#8A8A8A;max-width:40ch;line-height:1.6;">Illuminator создаёт игры для взрослой аудитории. Возвращайтесь, когда исполнится 18.</div>
+    <button onClick="{{ onBackToGate }}" style="font-family:'Golos Text';font-size:13px;background:none;border:none;color:#7A7A7A;cursor:pointer;text-decoration:underline;text-underline-offset:3px;">Я ошибся — вернуться</button>
+  </div>
+</sc-if>
+
+<div style="min-height:100vh;background:#000;overflow-x:clip;">
+
+  <header data-screen-label="02 Шапка" style="position:sticky;top:0;z-index:50;background:{{ headerBg }};backdrop-filter:blur({{ headerBlur }});-webkit-backdrop-filter:blur({{ headerBlur }});border-bottom:1px solid {{ headerLine }};transition:background .3s,border-color .3s;">
+    <div style="max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:28px;padding:16px clamp(18px,4vw,40px);">
+      <a href="#hero" style="display:flex;align-items:center;flex:none;"><img src="assets/logo.png" alt="illuminator" style="height:26px;display:block;"></a>
+      <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+        <nav style="display:flex;gap:30px;margin:0 auto;font-family:'JetBrains Mono';font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;">
+          <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+            <a href="{{ n.href }}" style="color:#9A9A9A;" style-hover="color:#FFFFFF;">{{ n.label }}</a>
+          </sc-for>
+        </nav>
+      </sc-if>
+      <div style="display:flex;align-items:center;gap:12px;margin-left:auto;">
+        <sc-if value="{{ showToggle }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;padding:3px;background:#0A0A0A;border:1px solid #262626;">
+            <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+              <button onClick="{{ m.pick }}" style="font-family:'Golos Text';font-size:13px;font-weight:600;padding:8px 14px;border:none;cursor:pointer;background:{{ m.bg }};color:{{ m.ink }};transition:all .2s;">{{ m.label }}</button>
+            </sc-for>
+          </div>
+          <a href="cabinet.html" style="font-family:'Exo 2';font-style:italic;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:11px 24px;background:#FF4A0A;color:#000;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);" style-hover="background:#FFFFFF;color:#000;">Кабинет</a>
+        </sc-if>
+        <sc-if value="{{ showBurger }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ toggleMenu }}" aria-label="Меню" style="width:44px;height:44px;border:1px solid #262626;background:#0A0A0A;color:#FFFFFF;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">{{ burgerIcon }}</button>
+        </sc-if>
+      </div>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="border-top:1px solid #1A1A1A;background:#050505;padding:16px clamp(18px,4vw,40px) 24px;display:flex;flex-direction:column;gap:4px;">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+          <a href="{{ n.href }}" onClick="{{ closeMenu }}" style="font-family:'Exo 2';font-style:italic;font-weight:800;text-transform:uppercase;font-size:24px;color:#FFFFFF;padding:12px 0;border-bottom:1px solid #161616;">{{ n.label }}</a>
+        </sc-for>
+        <sc-if value="{{ toggleInMenu }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+            <div style="display:flex;padding:3px;background:#0A0A0A;border:1px solid #262626;">
+              <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+                <button onClick="{{ m.pick }}" style="font-family:'Golos Text';font-size:14px;font-weight:600;padding:11px 16px;border:none;cursor:pointer;background:{{ m.bg }};color:{{ m.ink }};">{{ m.label }}</button>
+              </sc-for>
+            </div>
+            <a href="cabinet.html" onClick="{{ closeMenu }}" style="font-family:'Exo 2';font-style:italic;font-size:15px;font-weight:800;text-transform:uppercase;padding:14px 26px;background:#FF4A0A;color:#000;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);">Кабинет</a>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+  </header>
+
+  <section id="hero" data-screen-label="03 Первый экран" style="position:relative;">
+    <div style="position:absolute;right:-10%;top:-30%;width:1400px;height:1400px;background:repeating-conic-gradient(from 200deg,transparent 0deg 9deg,rgba(255,255,255,.05) 9deg 9.4deg);-webkit-mask:radial-gradient(circle,#000 0%,transparent 60%);mask:radial-gradient(circle,#000 0%,transparent 60%);pointer-events:none;"></div>
+    <div style="position:relative;max-width:1320px;margin:0 auto;padding:56px clamp(18px,4vw,40px) 88px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px;align-items:center;">
+      <div style="position:relative;z-index:2;">
+        <div style="display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#9A9A9A;"><span style="width:8px;height:8px;background:#FF4A0A;transform:rotate(45deg);box-shadow:0 0 10px #FF4A0A;"></span>{{ heroEyebrow }}</div>
+        <h1 style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(48px,6.6vw,104px);line-height:.92;letter-spacing:-.02em;margin:24px 0 0;color:#FFFFFF;">Одна искра.<br><span style="color:#FF4A0A;">Много миров.</span></h1>
+        <p style="max-width:46ch;font-size:17px;line-height:1.65;color:#A3A3A3;margin:26px 0 0;text-wrap:pretty;">Оригинальные игры на собственных механиках — SwarmWays, Floodlight и Blackout. Сильная математика, узнаваемый арт, свой свет у каждого мира.</p>
+        <div style="display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;">
+          <a href="{{ heroCtaHref }}" style="font-family:'Exo 2';font-style:italic;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:18px 36px;background:#FF4A0A;color:#000;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);" style-hover="background:#FFFFFF;color:#000;">{{ heroCta }}</a>
+          <a href="#mechanics" style="font-family:'Exo 2';font-style:italic;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:17px 30px;border:1px solid #333333;color:#FFFFFF;" style-hover="border-color:#FFFFFF;color:#FFFFFF;">Наши механики</a>
+        </div>
+      </div>
+      <div>
+        <div onPointerDown="{{ onHeroDown }}" onPointerUp="{{ onHeroUp }}" style="position:relative;height:{{ heroH }};perspective:1400px;touch-action:pan-y;user-select:none;cursor:grab;">
+          <sc-for list="{{ heroCards }}" as="c" hint-placeholder-count="3">
+            <div onClick="{{ c.pick }}" style="position:absolute;left:50%;top:50%;width:{{ cardW }};height:{{ cardH }};margin-left:{{ cardML }};margin-top:{{ cardMT }};transform:translateX({{ c.tx }}) scale({{ c.sc }}) rotateY({{ c.ry }});filter:brightness({{ c.br }});z-index:{{ c.z }};transition:transform .55s cubic-bezier(.3,.8,.3,1),filter .55s;overflow:hidden;background:#0A0A0A;clip-path:polygon(0 0,calc(100% - 28px) 0,100% 28px,100% 100%,28px 100%,0 calc(100% - 28px));">
+              <div style="position:absolute;inset:0;"><image-slot id="{{ c.slot }}" src="{{ c.src }}" shape="rect" placeholder="{{ c.name }} — обложка"></image-slot></div>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:70px 22px 26px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.95) 60%);pointer-events:none;">
+                <div style="font-family:'Exo 2';font-style:italic;font-size:26px;font-weight:900;text-transform:uppercase;line-height:1;color:#FFFFFF;">{{ c.name }}</div>
+                <div style="font-family:'JetBrains Mono';font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#FF4A0A;margin-top:10px;">{{ c.mech }}</div>
+              </div>
+              <div style="position:absolute;top:0;left:0;width:{{ c.barW }};height:3px;background:#FF4A0A;pointer-events:none;"></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-top:24px;">
+          <button onClick="{{ heroPrev }}" aria-label="Назад" style="width:46px;height:46px;border:1px solid #333333;background:transparent;color:#FFFFFF;cursor:pointer;font-size:18px;" style-hover="border-color:#FF4A0A;color:#FF4A0A;">←</button>
+          <div style="font-family:'JetBrains Mono';font-size:14px;letter-spacing:.12em;color:#6B6B6B;"><span style="color:#FFFFFF;">{{ heroNum }}</span> / 03</div>
+          <button onClick="{{ heroNext }}" aria-label="Вперёд" style="width:46px;height:46px;border:1px solid #333333;background:transparent;color:#FFFFFF;cursor:pointer;font-size:18px;" style-hover="border-color:#FF4A0A;color:#FF4A0A;">→</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="catalog" data-screen-label="04 Каталог" style="border-top:1px solid #1A1A1A;">
+    <div style="max-width:1320px;margin:0 auto;padding:88px clamp(18px,4vw,40px);">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+        <div>
+          <div style="display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#9A9A9A;"><span style="width:7px;height:7px;background:#FF4A0A;transform:rotate(45deg);"></span>Каталог</div>
+          <h2 style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(36px,4.4vw,60px);line-height:.95;margin:14px 0 0;color:#FFFFFF;">Все игры</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;background:#0A0A0A;border:1px solid #262626;padding:0 18px;width:min(340px,100%);" style-focus-within="border-color:#FF4A0A;">
+          <span style="color:#6B6B6B;">⌕</span>
+          <input value="{{ query }}" onInput="{{ onSearch }}" placeholder="Поиск по названию" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:#F2F2F2;font-family:'Golos Text';font-size:14px;padding:14px 0;">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:28px;">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+          <button onClick="{{ f.pick }}" style="font-family:'Golos Text';font-size:13px;font-weight:600;padding:10px 18px;cursor:pointer;background:{{ f.bg }};color:{{ f.ink }};border:1px solid {{ f.line }};transition:all .2s;">{{ f.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:2px;margin-top:32px;background:#1A1A1A;border:1px solid #1A1A1A;">
+        <sc-for list="{{ catalog }}" as="g" hint-placeholder-count="6">
+          <div onClick="{{ g.open }}" style="position:relative;overflow:hidden;background:#000;cursor:pointer;transition:background .3s;" style-hover="background:#0D0D0D;">
+            <div style="position:relative;aspect-ratio:16/10;overflow:hidden;">
+              <image-slot id="{{ g.slot }}" src="{{ g.land }}" shape="rect" placeholder="{{ g.name }} — обложка"></image-slot>
+              <sc-if value="{{ g.badge }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:14px;left:14px;font-family:'Exo 2';font-style:italic;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;background:{{ g.badgeBg }};color:#000;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);pointer-events:none;">{{ g.badge }}</span>
+              </sc-if>
+            </div>
+            <div style="padding:20px 22px 24px;display:flex;flex-direction:column;gap:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;">
+                <div style="font-family:'Exo 2';font-style:italic;font-size:22px;font-weight:900;text-transform:uppercase;color:#FFFFFF;">{{ g.name }}</div>
+                <div style="font-family:'JetBrains Mono';font-size:11px;font-weight:500;letter-spacing:.08em;color:#FF4A0A;white-space:nowrap;">{{ g.mech }}</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:12px;color:#7A7A7A;">
+                <div>RTP<div style="font-family:'JetBrains Mono';font-size:15px;font-weight:700;color:#F2F2F2;margin-top:4px;">{{ g.rtp }}</div></div>
+                <div>Макс. выигрыш<div style="font-family:'JetBrains Mono';font-size:15px;font-weight:700;color:#F2F2F2;margin-top:4px;">{{ g.max }}</div></div>
+                <div>Волатильность
+                  <div style="display:flex;gap:3px;margin-top:10px;">
+                    <sc-for list="{{ g.segs }}" as="sg" hint-placeholder-count="5"><span style="flex:1;height:5px;background:{{ sg.bg }};transform:skewX(-20deg);"></span></sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ catalogEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:20px;padding:60px 24px;border:1px dashed #333333;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;">
+          <img src="assets/logo-letters.png" alt="" style="width:140px;opacity:.25;">
+          <div style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:22px;color:#FFFFFF;margin-top:8px;">Ничего не нашлось</div>
+          <div style="font-size:14px;color:#8A8A8A;">По запросу «{{ query }}» игр нет. Проверьте написание или сбросьте фильтры.</div>
+          <button onClick="{{ resetCatalog }}" style="margin-top:6px;font-family:'Golos Text';font-size:13px;font-weight:600;padding:10px 18px;border:1px solid #333333;background:transparent;color:#F2F2F2;cursor:pointer;" style-hover="border-color:#FF4A0A;">Сбросить</button>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <section id="mechanics" data-screen-label="05 Механики" style="border-top:1px solid #1A1A1A;background:radial-gradient(ellipse 50% 50% at 50% 0%,rgba(255,74,10,.08),transparent 70%);">
+    <div style="max-width:1320px;margin:0 auto;padding:88px clamp(18px,4vw,40px);">
+      <div style="display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#9A9A9A;"><span style="width:7px;height:7px;background:#FF4A0A;transform:rotate(45deg);"></span>Фирменные механики</div>
+      <h2 style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(36px,4.4vw,60px);line-height:.95;margin:14px 0 0;color:#FFFFFF;">Три источника света</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin-top:40px;">
+        <sc-for list="{{ mechanics }}" as="m" hint-placeholder-count="3">
+          <div style="background:#0A0A0A;border:1px solid #1F1F1F;overflow:hidden;display:flex;flex-direction:column;transition:border-color .3s;" style-hover="border-color:#FF4A0A;">
+            <div style="height:230px;display:flex;align-items:center;justify-content:center;background:#050505;border-bottom:1px solid #1A1A1A;position:relative;overflow:hidden;">{{ m.anim }}<span style="position:absolute;top:14px;left:16px;font-family:'JetBrains Mono';font-size:11px;color:#5C5C5C;letter-spacing:.14em;">{{ m.num }}</span></div>
+            <div style="padding:24px 24px 28px;">
+              <div style="font-family:'Exo 2';font-style:italic;font-size:28px;font-weight:900;text-transform:uppercase;color:#FFFFFF;">{{ m.name }}<sup style="font-size:12px;color:#FF4A0A;margin-left:3px;">™</sup></div>
+              <p style="font-size:14px;line-height:1.6;color:#A3A3A3;margin:12px 0 0;text-wrap:pretty;">{{ m.desc }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap" data-screen-label="06 Роадмап" style="border-top:1px solid #1A1A1A;">
+    <div style="max-width:1320px;margin:0 auto;padding:88px clamp(18px,4vw,40px) 40px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#9A9A9A;"><span style="width:7px;height:7px;background:#FF4A0A;transform:rotate(45deg);"></span>План релизов</div>
+        <h2 style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(36px,4.4vw,60px);line-height:.95;margin:14px 0 0;color:#FFFFFF;">Роадмап</h2>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:12px;color:#8A8A8A;">
+          <sc-for list="{{ statusLegend }}" as="sl" hint-placeholder-count="4">
+            <span style="display:flex;align-items:center;gap:8px;"><span style="width:7px;height:7px;background:{{ sl.c }};transform:rotate(45deg);"></span>{{ sl.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button onClick="{{ rmPrev }}" aria-label="Назад" style="width:46px;height:46px;border:1px solid #333333;background:transparent;color:#FFFFFF;cursor:pointer;font-size:18px;" style-hover="border-color:#FF4A0A;color:#FF4A0A;">←</button>
+        <button onClick="{{ rmNext }}" aria-label="Вперёд" style="width:46px;height:46px;border:1px solid #333333;background:transparent;color:#FFFFFF;cursor:pointer;font-size:18px;" style-hover="border-color:#FF4A0A;color:#FF4A0A;">→</button>
+      </div>
+    </div>
+    <div ref="{{ rmRef }}" onScroll="{{ onRmScroll }}" onPointerDown="{{ onRmDown }}" onPointerMove="{{ onRmMove }}" style="display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;padding:0 clamp(18px,4vw,40px) 10px max(clamp(18px,4vw,40px),calc((100vw - 1320px)/2 + 40px));cursor:grab;user-select:none;">
+      <sc-for list="{{ roadmap }}" as="r" hint-placeholder-count="5">
+        <div style="flex:none;width:{{ r.w }};background:#0A0A0A;border:1px solid {{ r.line }};border-top:3px solid {{ r.c }};overflow:hidden;display:flex;flex-direction:column;">
+          <div style="position:relative;height:{{ r.coverH }};border-bottom:1px solid #1A1A1A;">
+            <sc-if value="{{ r.hasCover }}" hint-placeholder-val="{{ true }}">
+              <image-slot id="{{ r.slot }}" src="{{ r.src }}" shape="rect" placeholder="{{ r.name }}"></image-slot>
+            </sc-if>
+            <sc-if value="{{ r.untitled }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(-60deg,#0A0A0A 0 12px,#111111 12px 13px);"><span style="width:22px;height:22px;background:#FF4A0A;transform:rotate(45deg);opacity:.35;"></span></div>
+            </sc-if>
+          </div>
+          <div style="padding:20px 22px 24px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono';font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#A3A3A3;">{{ r.date }}</span>
+              <span style="display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:{{ r.c }};background:{{ r.chipBg }};padding:5px 10px;"><span style="width:6px;height:6px;background:{{ r.c }};transform:rotate(45deg);"></span>{{ r.status }}</span>
+            </div>
+            <div style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:{{ r.nameSize }};line-height:1;color:{{ r.nameInk }};">{{ r.name }}</div>
+            <div style="font-family:'JetBrains Mono';font-size:12px;color:#7A7A7A;">{{ r.mech }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="max-width:1320px;margin:0 auto;padding:24px clamp(18px,4vw,40px) 88px;">
+      <div style="position:relative;height:2px;background:#1F1F1F;">
+        <div style="position:absolute;top:0;height:2px;left:{{ rmL }};width:{{ rmW }};background:#FF4A0A;box-shadow:0 0 10px rgba(255,74,10,.6);"></div>
+      </div>
+      <div style="font-size:12px;color:#6B6B6B;margin-top:12px;">Листайте стрелками, свайпом или колесом с зажатым Shift</div>
+    </div>
+  </section>
+
+  <section id="spotlight" data-screen-label="07 Прожектор" style="border-top:1px solid #1A1A1A;">
+    <div style="max-width:1320px;margin:0 auto;padding:88px clamp(18px,4vw,40px);">
+      <div style="display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-size:12px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#9A9A9A;"><span style="width:7px;height:7px;background:#FF4A0A;transform:rotate(45deg);"></span>Прожектор</div>
+      <h2 style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(36px,4.4vw,60px);line-height:.95;margin:14px 0 0;color:#FFFFFF;">Промо-ролики релизов</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin-top:40px;">
+        <sc-for list="{{ videos }}" as="v" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="position:relative;aspect-ratio:16/9;overflow:hidden;background:#0A0A0A;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%);">
+              <image-slot id="{{ v.slot }}" src="{{ v.src }}" shape="rect" placeholder="Кадр из {{ v.name }}"></image-slot>
+              <button onClick="{{ v.play }}" aria-label="Смотреть" style="position:absolute;left:50%;top:50%;width:68px;height:68px;margin:-34px 0 0 -34px;border:none;cursor:pointer;background:#FF4A0A;color:#000;font-size:20px;padding-left:5px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);transition:transform .2s;" style-hover="transform:scale(1.1);background:#FFFFFF;">▶</button>
+              <span style="position:absolute;right:12px;bottom:12px;font-family:'JetBrains Mono';font-size:12px;font-weight:700;padding:4px 9px;background:rgba(0,0,0,.85);color:#F2F2F2;pointer-events:none;">{{ v.durLabel }}</span>
+            </div>
+            <div onClick="{{ v.play }}" style="cursor:pointer;">
+              <div style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:21px;color:#FFFFFF;">{{ v.name }}</div>
+              <div style="font-family:'JetBrains Mono';font-size:12px;color:#FF4A0A;margin-top:6px;">{{ v.mech }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" data-screen-label="Контакты" style="position:relative;overflow:hidden;border-top:1px solid #1A1A1A;padding:120px clamp(18px,4vw,40px);text-align:center;">
+    <div style="position:absolute;left:50%;top:120px;width:1600px;height:1600px;margin:-800px 0 0 -800px;background:repeating-conic-gradient(from 90deg,transparent 0deg 10deg,rgba(255,74,10,.22) 10deg 10.5deg);-webkit-mask:radial-gradient(circle,#000 0%,transparent 50%);mask:radial-gradient(circle,#000 0%,transparent 50%);pointer-events:none;"></div>
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;">
+      <span style="width:30px;height:30px;background:#FF4A0A;box-shadow:0 0 40px 6px rgba(255,74,10,.6);animation:breathe 3s ease-in-out infinite;"></span>
+      <h2 style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(36px,5.4vw,76px);line-height:.95;margin:40px auto 0;color:#FFFFFF;">Зажжём рынки вместе</h2>
+      <p style="font-size:16px;color:#A3A3A3;margin:18px auto 0;max-width:46ch;">Расскажите о своей платформе — пришлём демо и план запуска.</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:32px;flex-wrap:wrap;">
+        <input placeholder="Ваш e-mail" style="width:300px;max-width:100%;padding:17px 22px;border:1px solid #333333;background:#0A0A0A;color:#F2F2F2;font-family:'Golos Text';font-size:15px;outline:none;" style-focus="border-color:#FF4A0A;">
+        <button onClick="{{ onContact }}" style="font-family:'Exo 2';font-style:italic;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:17px 36px;border:none;cursor:pointer;background:#FF4A0A;color:#000;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);" style-hover="background:#FFFFFF;">{{ contactLabel }}</button>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid #1A1A1A;">
+    <div style="max-width:1320px;margin:0 auto;padding:28px clamp(18px,4vw,40px);display:flex;align-items:center;gap:28px;flex-wrap:wrap;">
+      <img src="assets/logo.png" alt="illuminator" style="height:20px;">
+      <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6B6B6B;">18+ · Играйте ответственно</span>
+      <span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:#6B6B6B;">© 2026 Illuminator</span>
+    </div>
+  </footer>
+</div>
+
+<sc-if value="{{ modalOn }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="04 Окно игры" onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div onClick="{{ stop }}" style="position:relative;width:min(920px,100%);max-height:90vh;overflow:auto;background:#0A0A0A;border:1px solid #262626;border-top:3px solid #FF4A0A;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));">
+      <div style="position:relative;min-height:300px;"><image-slot id="{{ mg.slotBig }}" src="{{ mg.land }}" shape="rect" placeholder="{{ mg.name }} — арт"></image-slot></div>
+      <div style="padding:32px 32px 34px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-family:'JetBrains Mono';font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#FF4A0A;">{{ mg.mech }}</div>
+        <div style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:38px;color:#FFFFFF;line-height:.95;">{{ mg.name }}</div>
+        <p style="font-size:14px;line-height:1.65;color:#A3A3A3;margin:0;">{{ mg.desc }}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#222222;border:1px solid #222222;">
+          <div style="background:#0A0A0A;padding:14px;font-size:12px;color:#7A7A7A;">RTP<div style="font-family:'JetBrains Mono';font-weight:700;font-size:17px;color:#F2F2F2;margin-top:4px;">{{ mg.rtp }}</div></div>
+          <div style="background:#0A0A0A;padding:14px;font-size:12px;color:#7A7A7A;">Макс. выигрыш<div style="font-family:'JetBrains Mono';font-weight:700;font-size:17px;color:#F2F2F2;margin-top:4px;">{{ mg.max }}</div></div>
+          <div style="background:#0A0A0A;padding:14px;font-size:12px;color:#7A7A7A;">Сетка<div style="font-family:'JetBrains Mono';font-weight:700;font-size:17px;color:#F2F2F2;margin-top:4px;">{{ mg.grid }}</div></div>
+          <div style="background:#0A0A0A;padding:14px;font-size:12px;color:#7A7A7A;">Релиз<div style="font-family:'JetBrains Mono';font-weight:700;font-size:17px;color:#F2F2F2;margin-top:4px;">{{ mg.release }}</div></div>
+        </div>
+        <div style="font-size:12px;color:#7A7A7A;">Волатильность
+          <div style="display:flex;gap:4px;margin-top:8px;"><sc-for list="{{ mg.segs }}" as="sg" hint-placeholder-count="5"><span style="flex:1;height:6px;background:{{ sg.bg }};transform:skewX(-20deg);"></span></sc-for></div>
+        </div>
+        <button onClick="{{ requestDemo }}" style="margin-top:6px;font-family:'Exo 2';font-style:italic;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:17px 28px;border:none;cursor:pointer;background:#FF4A0A;color:#000;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);" style-hover="background:#FFFFFF;">{{ demoLabel }}</button>
+      </div>
+      <button onClick="{{ closeModal }}" aria-label="Закрыть" style="position:absolute;top:14px;right:14px;width:44px;height:44px;border:1px solid #333333;background:rgba(0,0,0,.85);color:#FFFFFF;cursor:pointer;font-size:18px;" style-hover="border-color:#FF4A0A;">✕</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ playerOn }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="07 Плеер" style="position:fixed;inset:0;z-index:95;background:#000;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,3vw,32px);gap:16px;">
+      <div>
+        <div style="font-family:'Exo 2';font-style:italic;font-weight:900;text-transform:uppercase;font-size:22px;color:#FFFFFF;">{{ pv.name }}</div>
+        <div style="font-family:'JetBrains Mono';font-size:12px;color:#FF4A0A;margin-top:4px;">{{ pv.mech }}</div>
+      </div>
+      <button onClick="{{ closePlayer }}" aria-label="Закрыть" style="width:46px;height:46px;border:1px solid #333333;background:transparent;color:#FFFFFF;cursor:pointer;font-size:18px;" style-hover="border-color:#FF4A0A;">✕</button>
+    </div>
+    <div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 clamp(16px,3vw,32px);">
+      <div onClick="{{ togglePlay }}" style="position:relative;width:min(100%,calc((100vh - 200px) * 16 / 9));aspect-ratio:16/9;overflow:hidden;background:#0A0A0A;">
+        <image-slot id="{{ pv.slotBig }}" src="{{ pv.src }}" shape="rect" placeholder="Ролик {{ pv.name }}"></image-slot>
+        <sc-if value="{{ paused }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);pointer-events:none;"><span style="width:88px;height:88px;background:#FF4A0A;color:#000;font-size:28px;display:flex;align-items:center;justify-content:center;padding-left:6px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);">▶</span></div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;padding:20px clamp(16px,3vw,32px) 28px;">
+      <button onClick="{{ togglePlay }}" style="width:46px;height:46px;border:none;background:#FFFFFF;color:#000;cursor:pointer;font-size:15px;flex:none;">{{ playIcon }}</button>
+      <div onClick="{{ onSeek }}" style="flex:1;height:20px;display:flex;align-items:center;cursor:pointer;">
+        <div style="position:relative;width:100%;height:3px;background:#262626;">
+          <div style="position:absolute;left:0;top:0;height:3px;width:{{ playPct }};background:#FF4A0A;box-shadow:0 0 8px #FF4A0A;"></div>
+        </div>
+      </div>
+      <span style="font-family:'JetBrains Mono';font-size:13px;color:#A3A3A3;white-space:nowrap;">{{ timeLabel }}</span>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;introPreview&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;live&quot;,&quot;0%&quot;,&quot;40%&quot;,&quot;срыв пламени&quot;,&quot;100%&quot;,&quot;уход кадра&quot;,&quot;выкл&quot;],&quot;default&quot;:&quot;live&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;01 Заставка&quot;}}">
+const ACC = '#FF4A0A';
+const GAMES = [
+  { id: 'volt', name: 'Volt Coins', mech: 'SwarmWays™', rtp: '96.4%', max: 'x5 000', vol: 4, tags: ['new', 'high'], grid: '5×3', release: 'Октябрь 2026', desc: 'Электрические монеты собираются роем: каждая связка заряжает соседние ячейки и поднимает множитель.' },
+  { id: 'joker', name: 'Neon Joker Spins', mech: 'Floodlight™', rtp: '96.1%', max: 'x4 000', vol: 3, tags: ['new'], grid: '5×3', release: 'Ноябрь 2026', desc: 'Неоновый джокер ведёт луч по барабанам — освещённые символы становятся дикими до конца спина.' },
+  { id: 'savannah', name: 'Savannah Kings', mech: 'Blackout™', rtp: '96.2%', max: 'x10 000', vol: 5, tags: ['new', 'high'], grid: '6×4', release: 'Декабрь 2026', desc: 'Закат над саванной гасит поле ячейка за ячейкой. Последний король под солнцем умножает выигрыш.' },
+  { id: 'olympus', name: 'Olympus Thunder', mech: 'Floodlight™', rtp: '96.3%', max: 'x15 000', vol: 5, tags: ['high'], grid: '6×5', release: 'Январь 2027', desc: 'Молнии Зевса бьют по барабанам и превращают символы на своём пути в дикие.' },
+  { id: 'sugar', name: 'Sugar Blast', mech: 'SwarmWays™', rtp: '96.5%', max: 'x5 000', vol: 3, tags: [], grid: '7×7', release: 'Февраль 2027', desc: 'Конфеты взрываются кластерами, а рой сладостей тянет за собой новые связки.' },
+  { id: 'koi', name: 'Golden Koi Fortune', mech: 'Blackout™', rtp: '96.6%', max: 'x3 000', vol: 2, tags: [], grid: '5×3', release: 'Март 2027', desc: 'Пруд темнеет, и только золотой карп остаётся на свету — он и приносит главный приз.' },
+  { id: 'boom', name: 'Boom Shaft', mech: 'Blackout™', rtp: '96.2%', max: 'x12 000', vol: 5, tags: ['soon', 'high'], grid: '6×5', release: 'Q2 2027', desc: 'Шахта, динамит и гаснущие фонари: последний огонь в забое взрывает множитель.' },
+  { id: 'rocket', name: 'Rocket Rush 243', mech: 'SwarmWays™', rtp: '96.3%', max: 'x6 000', vol: 4, tags: ['soon', 'high'], grid: '5×3 · 243 линии', release: 'Q2 2027', desc: '243 способа выигрыша и ракетный рой, который разгоняет каждую связку.' },
+  { id: 'pots', name: 'Pots of Gold', mech: 'Floodlight™', rtp: '96.5%', max: 'x2 500', vol: 2, tags: ['soon'], grid: '5×3', release: 'Q3 2027', desc: 'Радуга-прожектор находит горшки с золотом и делает их дикими.' },
+  { id: 'samba', name: 'Samba Goal', mech: 'SwarmWays™', rtp: '96.4%', max: 'x4 000', vol: 3, tags: ['soon'], grid: '5×4', release: 'Q3 2027', desc: 'Футбольный карнавал: мяч собирает рой символов и забивает в ворота множителя.' }
+];
+const STATUS = {
+  ready: { label: 'Готова к релизу', c: '#FF4A0A' },
+  cert: { label: 'На сертификации', c: '#FFFFFF' },
+  prod: { label: 'В производстве', c: '#A3A3A3' },
+  concept: { label: 'В концепте', c: '#6B6B6B' }
+};
+const ROAD = [
+  { date: 'Октябрь 2026', name: 'Volt Coins', mech: 'SwarmWays™', st: 'ready', slot: 'rm4-volt' },
+  { date: 'Ноябрь 2026', name: 'Neon Joker Spins', mech: 'Floodlight™', st: 'cert', slot: 'rm4-joker' },
+  { date: 'Декабрь 2026', name: 'Savannah Kings', mech: 'Blackout™', st: 'cert', slot: 'rm4-savannah' },
+  { date: 'Январь 2027', name: 'Olympus Thunder', mech: 'Floodlight™', st: 'prod', slot: 'rm4-olympus' },
+  { date: 'Q2 2027', name: 'Boom Shaft', mech: 'Blackout™', st: 'concept', slot: 'rm4-boom' },
+  { date: 'Q4 2027', name: 'Без названия', mech: 'SwarmWays™', st: 'concept', untitled: true }
+];
+const VIDEOS = [
+  { id: 'v-volt', name: 'Volt Coins', mech: 'SwarmWays™', dur: 48 },
+  { id: 'v-joker', name: 'Neon Joker Spins', mech: 'Floodlight™', dur: 62 },
+  { id: 'v-savannah', name: 'Savannah Kings', mech: 'Blackout™', dur: 55 }
+];
+const LAND = id => `assets/games/${id}-l.jpg`, PORT = id => `assets/games/${id}-p.jpg`;
+const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+
+class Component extends DCLogic {
+  state = { W: window.innerWidth, H: window.innerHeight, p: 0, phase: 'dark', flick: false, flash: false, burst: 0, denied: false,
+    mode: 'players', menuOpen: false, scrolled: false, heroIdx: 0, filter: 'all', query: '', openId: null, demoSent: false,
+    rmL: 0, rmW: 40, playerId: null, playing: false, t: 0, contactSent: false };
+  rmRef = React.createRef();
+
+  preview() { return this.props.introPreview ?? 'live'; }
+  syncLock() {
+    const lock = this.preview() === 'live' && this.state.phase !== 'done' || this.state.denied || this.state.openId || this.state.playerId;
+    document.body.style.overflow = lock ? 'hidden' : '';
+  }
+  componentDidMount() {
+    if (this.preview() === 'live') window.scrollTo(0, 0);
+    this.syncLock();
+    requestAnimationFrame(() => this.setState({ W: window.innerWidth, H: window.innerHeight }));
+    this._rs = () => this.setState({ W: window.innerWidth, H: window.innerHeight }, () => this.measureRm());
+    this._sc = () => { const s = window.scrollY > 20; if (s !== this.state.scrolled) this.setState({ scrolled: s }); };
+    this._key = e => { if (e.key === 'Escape') this.setState({ openId: null, playerId: null, playing: false, menuOpen: false }); };
+    this._up = () => { this._drag = false; this._rmDown = false; };
+    window.addEventListener('resize', this._rs);
+    window.addEventListener('scroll', this._sc, { passive: true });
+    window.addEventListener('keydown', this._key);
+    window.addEventListener('pointerup', this._up);
+    this._tick = setInterval(() => {
+      const s = this.state, v = VIDEOS.find(x => x.id === s.playerId);
+      if (v && s.playing) this.setState(st => st.t + 0.25 >= v.dur ? { t: v.dur, playing: false } : { t: st.t + 0.25 });
+    }, 250);
+    setTimeout(() => this.measureRm(), 300);
+  }
+  componentDidUpdate() { this.syncLock(); }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._rs); window.removeEventListener('scroll', this._sc);
+    window.removeEventListener('keydown', this._key); window.removeEventListener('pointerup', this._up);
+    clearInterval(this._tick); [this._t1, this._t2, this._ft].forEach(clearTimeout);
+    document.body.style.overflow = '';
+  }
+
+  advance(a) {
+    if (this.preview() !== 'live' || this.state.phase !== 'dark' || this.state.denied) return;
+    const prev = this.state.p, p = Math.min(100, prev + a);
+    const now = Date.now(), spark = now - (this._ls || 0) > 70;
+    if (spark) this._ls = now;
+    this.setState(st => ({ p, burst: spark ? st.burst + 1 : st.burst, flash: spark ? true : st.flash }));
+    if (spark) { clearTimeout(this._ft); this._ft = setTimeout(() => this.setState({ flash: false }), 110); }
+    [70, 86].forEach(th => { if (prev < th && p >= th) this.sputter(); });
+    if (p >= 100) this.ignite();
+  }
+  sputter() {
+    this.setState({ flick: true });
+    setTimeout(() => this.setState({ flick: false }), 200);
+  }
+  ignite() {
+    if (this._ign) return;
+    this._ign = true;
+    this.setState({ p: 100, phase: 'lit', flick: false });
+    this._t1 = setTimeout(() => this.setState({ phase: 'exit' }), 1100);
+    this._t2 = setTimeout(() => { window.scrollTo(0, 0); this.setState({ phase: 'done' }); }, 2600);
+  }
+  measureRm() {
+    const el = this.rmRef.current; if (!el) return;
+    const sw = el.scrollWidth || 1;
+    this.setState({ rmL: el.scrollLeft / sw * 100, rmW: Math.min(100, el.clientWidth / sw * 100) });
+  }
+
+  mechAnim(kind) {
+    const E = React.createElement;
+    const cell = (style, key, child) => E('div', { key, style: Object.assign({ width: 26, height: 26, background: '#141414', display: 'flex', alignItems: 'center', justifyContent: 'center' }, style) }, child);
+    const grid = (cols, kids) => E('div', { style: { display: 'grid', gridTemplateColumns: `repeat(${cols},26px)`, gap: 6, position: 'relative', zIndex: 1 } }, kids);
+    if (kind === 'swarm') {
+      const kids = [];
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 7; c++) {
+        const d = (c + Math.abs(r - 1.5) * 1.2) * 0.14;
+        kids.push(cell({ animation: `swarm 3.6s ease-in-out ${d.toFixed(2)}s infinite` }, r + '-' + c));
+      }
+      return grid(7, kids);
+    }
+    if (kind === 'flood') {
+      const kids = [];
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 5; c++) kids.push(cell({ animation: `floodcell 3.4s ease-in-out ${(c * 0.34 + r * 0.05).toFixed(2)}s infinite` }, r + '-' + c));
+      return E(React.Fragment, null,
+        E('div', { key: 'beam', style: { position: 'absolute', left: '50%', top: -20, width: 260, height: 300, marginLeft: -130, transformOrigin: '50% 0', background: 'conic-gradient(from 165deg at 50% 0, transparent 0deg, rgba(255,255,255,.28) 15deg, transparent 30deg)', animation: 'beam 1.7s ease-in-out infinite alternate', pointerEvents: 'none', zIndex: 2 } }),
+        E('div', { key: 'src', style: { position: 'absolute', left: '50%', top: 6, width: 14, height: 14, marginLeft: -7, background: ACC, transform: 'rotate(45deg)', boxShadow: '0 0 18px 6px rgba(255,74,10,.7)', zIndex: 3 } }),
+        E('div', { key: 'g', style: { marginTop: 40 } }, grid(5, kids)));
+    }
+    const order = [7, 2, 11, 4, 9, 0, 13, 99, 5, 8, 3, 12, 1, 10, 6];
+    const kids = order.map((o, i) => o === 99
+      ? cell({ background: '#070707' }, i, E('span', { style: { width: 12, height: 12, background: '#FFFFFF', boxShadow: '0 0 14px ' + ACC + ',0 0 28px ' + ACC, animation: 'starburst 4s ease-in-out infinite' } }))
+      : cell({ animation: `blackcell 4s ease-in-out ${(o * 0.12).toFixed(2)}s infinite` }, i));
+    return grid(5, kids);
+  }
+
+  gateVals() {
+    const s = this.state, W = s.W, pv = this.preview();
+    let p = s.p, phase = s.phase, flick = s.flick, flash = s.flash;
+    if (pv === '0%') { p = 0; phase = 'dark'; flick = false; flash = false; }
+    if (pv === '40%') { p = 40; phase = 'dark'; flick = false; flash = true; }
+    if (pv === 'срыв пламени') { p = 78; phase = 'dark'; flick = true; flash = true; }
+    if (pv === '100%') { p = 100; phase = 'lit'; flick = false; }
+    if (pv === 'уход кадра') { p = 100; phase = 'exit'; }
+    const lw = Math.min(W * 0.84, 760);
+    const lit = phase === 'lit' || phase === 'exit';
+    const sparksEl = s.burst > 0 && phase === 'dark' && pv === 'live'
+      ? React.createElement('div', { key: 'b' + s.burst, style: { position: 'absolute' } },
+        Array.from({ length: 10 }, (_, i) => React.createElement('span', { key: i, style: { position: 'absolute', width: 3, height: 3, background: i % 3 ? '#FFFFFF' : ACC, boxShadow: '0 0 6px ' + ACC, '--dx': (-60 + Math.random() * 120) + 'px', '--dy': (-10 - Math.random() * 60) + 'px', animation: `sparkfly ${0.4 + Math.random() * 0.35}s ease-out forwards` } })))
+      : null;
+    const exitFrozen = pv === 'уход кадра';
+    const k = p / 100;
+    return {
+      gateOn: pv !== 'выкл' && (pv !== 'live' || phase !== 'done'),
+      deniedOn: s.denied,
+      gateOpacity: phase === 'exit' ? (exitFrozen ? 0.7 : 0) : 1,
+      gatePointer: phase === 'exit' ? 'none' : 'auto',
+      lw: lw + 'px',
+      camScale: phase === 'exit' ? (exitFrozen ? 3 : 14) : 1,
+      lettersOpacity: lit ? 1 : (0.1 + k * 0.55 + (flick ? 0.25 : 0)).toFixed(2),
+      diamondOpacity: lit || flick ? 1 : (0.25 + k * 0.6).toFixed(2),
+      diamondGlow: lit ? '22px' : flick ? '16px' : (2 + k * 10).toFixed(0) + 'px',
+      raysOpacity: lit ? 1 : flick ? 0.5 : (k * 0.25).toFixed(2),
+      raysScale: lit ? 1 : (0.3 + k * 0.4).toFixed(2),
+      raysRot: lit ? '8deg' : '0deg',
+      preGlow: (lit ? 0.5 : flick ? 0.35 : 0.02 + k * 0.22).toFixed(2),
+      metal: (flash ? 1.4 : 1).toFixed(2),
+      sparksEl,
+      uiOpacity: phase === 'dark' ? 1 : 0,
+      pPct: p + '%',
+      onWheel: e => { if (e.deltaY > 0) this.advance(Math.min(6, Math.max(0.6, e.deltaY / 18))); },
+      onTouchStart: e => { this._ty = e.touches[0].clientY; },
+      onTouchMove: e => { const y = e.touches[0].clientY; if (this._ty - y > 18) { this._ty = y; this.advance(5); } },
+      onGrab: e => { if (e.pointerType !== 'mouse') return; e.preventDefault(); this._drag = true; this._px = e.clientX; this._py = e.clientY; this._acc = 0; },
+      onGatePointerMove: e => {
+        if (!this._drag) return;
+        this._acc += Math.abs(e.clientX - this._px) + Math.abs(e.clientY - this._py);
+        this._px = e.clientX; this._py = e.clientY;
+        while (this._acc >= 16) { this._acc -= 16; this.advance(3.5); }
+      },
+      onAgeYes: () => { if (pv === 'live') this.ignite(); },
+      onAgeNo: () => this.setState({ denied: true }),
+      onBackToGate: () => this.setState({ denied: false })
+    };
+  }
+
+  renderVals() {
+    const s = this.state, W = s.W || window.innerWidth || document.documentElement.clientWidth || 1280, ops = s.mode === 'ops';
+    const desktop = W >= 1100, phone = W < 760;
+    const segs = v => [1, 2, 3, 4, 5].map(i => ({ bg: i <= v ? ACC : '#242424' }));
+
+    const navItems = ops
+      ? [{ label: 'Каталог', href: '#catalog' }, { label: 'Механики', href: '#mechanics' }, { label: 'Роадмап', href: '#roadmap' }, { label: 'Промо-ролики', href: '#spotlight' }, { label: 'Контакты', href: '#contact' }]
+      : [{ label: 'Игры', href: '#hero' }, { label: 'Механики', href: '#mechanics' }, { label: 'Скоро', href: '#roadmap' }, { label: 'Ролики', href: '#spotlight' }, { label: 'Контакты', href: '#contact' }];
+    const modes = [['players', 'Игрокам'], ['ops', 'Операторам']].map(([k, label]) => ({ label, bg: s.mode === k ? '#FFFFFF' : 'transparent', ink: s.mode === k ? '#000000' : '#9A9A9A', pick: () => this.setState({ mode: k }) }));
+
+    const heroGames = GAMES.slice(0, 3);
+    const pad = Math.max(18, Math.min(40, W * 0.04)) * 2;
+    const inner = Math.min(W, 1320) - pad;
+    const twoCol = inner >= 2 * 400 + 40;
+    const colW = twoCol ? (inner - 40) / 2 : inner;
+    const cw = Math.min(phone ? 230 : 300, colW * 0.62), ch = cw * 1.42;
+    const sideOff = Math.max(0, Math.min(cw * 0.64, colW / 2 - cw * 0.4 - 6));
+    const heroCards = heroGames.map((g, i) => {
+      const o = ((i - s.heroIdx + 4) % 3) - 1;
+      return { name: g.name, mech: g.mech, slot: 'hero4-' + g.id, src: PORT(g.id),
+        tx: (o * sideOff) + 'px', sc: o ? 0.8 : 1, ry: (o * -16) + 'deg', br: o ? 0.35 : 1, z: o ? 1 : 3, barW: o ? '0%' : '60%',
+        pick: () => { if (!this._heroDragged && o) this.setState({ heroIdx: i }); } };
+    });
+    const heroGo = d => this.setState(st => ({ heroIdx: (st.heroIdx + d + 3) % 3 }));
+
+    const q = s.query.trim().toLowerCase();
+    const catalog = GAMES.filter(g => (s.filter === 'all' || g.tags.includes(s.filter)) && (!q || g.name.toLowerCase().includes(q)))
+      .map(g => {
+        const soon = g.tags.includes('soon');
+        return { ...g, land: LAND(g.id), slot: 'cat4-' + g.id, segs: segs(g.vol), badge: soon ? 'Скоро' : g.tags.includes('new') ? 'Новинка' : '', badgeBg: soon ? '#FFFFFF' : ACC, open: () => this.setState({ openId: g.id, demoSent: false }) };
+      });
+    const filters = [['all', 'Все'], ['new', 'Новые'], ['high', 'Высокая волатильность'], ['soon', 'Скоро']].map(([k, label]) => {
+      const on = s.filter === k;
+      return { label, bg: on ? '#FFFFFF' : 'transparent', ink: on ? '#000000' : '#9A9A9A', line: on ? '#FFFFFF' : '#2E2E2E', pick: () => this.setState({ filter: k }) };
+    });
+    const og = GAMES.find(g => g.id === s.openId) || GAMES[0];
+
+    const roadmap = ROAD.map((r, i) => {
+      const st = STATUS[r.st], first = i === 0;
+      return { ...r, src: r.slot ? LAND(r.slot.slice(4)) : '', status: st.label, c: st.c, chipBg: st.c + '1a', w: first ? (phone ? '84vw' : '440px') : (phone ? '72vw' : '300px'),
+        coverH: first ? '240px' : '170px', nameSize: first ? '34px' : '24px', nameInk: r.untitled ? '#5C5C5C' : '#FFFFFF',
+        line: first ? '#3A3A3A' : '#1F1F1F', hasCover: !r.untitled, untitled: !!r.untitled };
+    });
+
+    const pvid = VIDEOS.find(v => v.id === s.playerId) || VIDEOS[0];
+
+    return {
+      ...this.gateVals(),
+      headerBg: s.scrolled ? 'rgba(0,0,0,.92)' : 'rgba(0,0,0,0)',
+      headerBlur: s.scrolled ? '14px' : '0px',
+      headerLine: s.scrolled ? '#1A1A1A' : 'transparent',
+      showNav: desktop, showToggle: !phone, showBurger: !desktop, toggleInMenu: phone,
+      menuOpen: s.menuOpen && !desktop, burgerIcon: s.menuOpen ? '✕' : '☰',
+      toggleMenu: () => this.setState(st => ({ menuOpen: !st.menuOpen })), closeMenu: () => this.setState({ menuOpen: false }),
+      navItems, modes,
+      heroEyebrow: ops ? 'Игровая студия · B2B' : 'Игровая студия',
+      heroCta: ops ? 'Запросить демо' : 'Смотреть игры', heroCtaHref: ops ? '#contact' : '#catalog',
+      heroCards, heroNum: '0' + (s.heroIdx + 1),
+      cardW: cw + 'px', cardH: ch + 'px', cardML: -cw / 2 + 'px', cardMT: -ch / 2 + 'px', heroH: (ch + 40) + 'px',
+      heroPrev: () => heroGo(-1), heroNext: () => heroGo(1),
+      onHeroDown: e => { this._hx = e.clientX; this._heroDragged = false; },
+      onHeroUp: e => { const dx = e.clientX - (this._hx ?? e.clientX); if (Math.abs(dx) > 40) { this._heroDragged = true; heroGo(dx < 0 ? 1 : -1); setTimeout(() => { this._heroDragged = false; }, 50); } },
+      query: s.query, onSearch: e => this.setState({ query: e.target.value }),
+      filters, catalog, catalogEmpty: catalog.length === 0,
+      resetCatalog: () => this.setState({ query: '', filter: 'all' }),
+      modalOn: !!s.openId, mg: { ...og, land: LAND(og.id), slotBig: 'cat4big-' + og.id, segs: segs(og.vol) },
+      closeModal: () => this.setState({ openId: null }), stop: e => e.stopPropagation(),
+      requestDemo: () => this.setState({ demoSent: true }), demoLabel: s.demoSent ? 'Запрос отправлен ◆' : 'Запросить демо',
+      mechanics: [
+        { num: '01', name: 'SwarmWays', desc: 'Символы движутся роем: каждая выигрышная связка притягивает соседние ячейки и расширяет линию выплат прямо во время спина.', anim: this.mechAnim('swarm') },
+        { num: '02', name: 'Floodlight', desc: 'Луч прожектора проходит по барабанам. Освещённые символы становятся дикими до конца раунда.', anim: this.mechAnim('flood') },
+        { num: '03', name: 'Blackout', desc: 'Поле гаснет ячейка за ячейкой. Последний символ в темноте вспыхивает и умножает выигрыш всего экрана.', anim: this.mechAnim('black') }
+      ],
+      statusLegend: Object.values(STATUS),
+      roadmap, rmRef: this.rmRef,
+      rmL: s.rmL + '%', rmW: s.rmW + '%',
+      onRmScroll: () => this.measureRm(),
+      rmPrev: () => this.rmRef.current && this.rmRef.current.scrollBy({ left: -320, behavior: 'smooth' }),
+      rmNext: () => this.rmRef.current && this.rmRef.current.scrollBy({ left: 320, behavior: 'smooth' }),
+      onRmDown: e => { if (e.pointerType !== 'mouse' || !this.rmRef.current) return; this._rmDown = true; this._rmX = e.clientX; this._rmS = this.rmRef.current.scrollLeft; },
+      onRmMove: e => { if (this._rmDown && this.rmRef.current) this.rmRef.current.scrollLeft = this._rmS - (e.clientX - this._rmX); },
+      videos: VIDEOS.map(v => ({ ...v, src: LAND(v.id.slice(2)), slot: 'spot4-' + v.id, durLabel: fmt(v.dur), play: () => this.setState({ playerId: v.id, playing: true, t: 0 }) })),
+      playerOn: !!s.playerId, pv: { ...pvid, src: LAND(pvid.id.slice(2)), slotBig: 'spot4big-' + pvid.id },
+      paused: !s.playing, playIcon: s.playing ? '❚❚' : '▶',
+      togglePlay: () => this.setState(st => ({ playing: !st.playing, t: st.t >= pvid.dur ? 0 : st.t })),
+      closePlayer: () => this.setState({ playerId: null, playing: false }),
+      onSeek: e => { const r = e.currentTarget.getBoundingClientRect(); this.setState({ t: Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * pvid.dur }); },
+      playPct: (s.t / pvid.dur * 100) + '%', timeLabel: fmt(s.t) + ' / ' + fmt(pvid.dur),
+      contactLabel: s.contactSent ? 'Искра отправлена ◆' : 'Связаться', onContact: () => this.setState({ contactSent: true })
+    };
+  }
+}
+</script>
+</body>
+</html>
